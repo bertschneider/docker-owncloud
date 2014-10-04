@@ -1,6 +1,6 @@
 #+TITLE: How to install your "own cloud" with docker
 
-Have a look at the blogpost: [[http://www.herr-norbert.de/2014/10/05/docker-owncloud/][OwnCloud in a container]]
+Have a look at the blogpost: [[http://www.herr-norbert.de/2014/10/04/docker-owncloud/][OwnCloud in a container]]
 
 * Modularization
    - PostgreSQL data container
