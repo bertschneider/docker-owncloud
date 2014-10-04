@@ -1,0 +1,38 @@
+#+TITLE: How to install your "own cloud" with docker
+
+Have a look at the blogpost: [[http://www.herr-norbert.de/2014/10/05/docker-owncloud/][OwnCloud in a container]]
+
+* Modularization
+   - PostgreSQL data container
+   - PostgreSQL container
+   - data container
+   - nginx container
+
+* Create a PostgreSQL volume container
+   - Container uses volume "/var/lib/postgresql/data"
+   - Create a volume container to store and easily manage the database files
+     docker run --name owncloud-postgres-data -v /var/lib/postgresql/data busybox echo PostgreSQL data-only container
+
+* Install the database container
+   - Official PostgreSQL container available
+     [[https://registry.hub.docker.com/_/postgres/][Official Container]]
+     [[https://github.com/docker-library/postgres/tree/master/9.4][Official Container GitHub Repository]]
+   - Uses volume "/var/lib/postgresql/data"
+   - Exposes port "5432" and makes it available to other containers through linking
+   - Create the postgres container and link it to the data container
+     docker run --name owncloud-postgres --volumes-from owncloud-postgres-data postgres
+
+* Create the data volume container
+   - OwnCloud files will be served from "/var/www"
+   - Create volume container
+     cd data
+     dockre build -t owncloud-data .
+     docker run --name owncloud-data owncloud-data
+
+* Create nginx container
+   - Use data container to store files
+   - Use nginx base container and add some php dependencies
+   - Add config and ssl keys
+     cd nginx
+     docker build -t owncloud-nginx .
+     docker run --name owncloud-nginx -p 443:443 --volumes-from owncloud-data --link owncloud-postgres:postgres owncloud-nginx
