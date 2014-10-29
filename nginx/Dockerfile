@@ -20,6 +20,11 @@ ADD ssl.crt /etc/ssl/nginx/ssl.crt
 ADD ssl.key /etc/ssl/nginx/ssl.key
 ADD nginx.conf /etc/nginx/nginx.conf
 
+# Configure php
+RUN sed -i -e "s/^upload_max_filesize\s*=\s*2M/upload_max_filesize = 16G/" /etc/php5/fpm/php.ini
+RUN sed -i -e "s/^post_max_size\s*=\s*8M/post_max_size = 16G/" /etc/php5/fpm/php.ini
+RUN sed -i -e "s/^output_buffering\s*=\s*4096/output_buffering = 0/" /etc/php5/fpm/php.ini
+
 # Configure  php-fpm
 ADD www.conf /etc/php5/fpm/pool.d/www.conf
 
